@@ -9,27 +9,10 @@ from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
 
-st.markdown("""
-    <style>
-        @keyframes move {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
 
-        .moving-text {
-            animation: move 20s linear infinite;
-            text-align: center;
-            color: red;
-        }
-    </style>
-""", unsafe_allow_html=True)
-
-st.markdown("""
-    <h1 class="moving-text">STOCK PRICE PREDICTION</h1>
-""", unsafe_allow_html=True)
+st.title('Stock Price Prediction')
 
 st.subheader('**🗃 Data**')
-
 # Define the directory containing the stock data files
 stocks_directory = "stocks"
 
