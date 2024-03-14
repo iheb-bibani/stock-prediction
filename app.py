@@ -8,11 +8,8 @@ import plotly.figure_factory as ff
 import numpy as np
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import LSTM, Dense
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
-
 
 st.title('Stock Price Prediction')
 st.subheader('**🗃 Data**')
@@ -120,48 +117,6 @@ if model == 'Linear Regression':
     fig.update_xaxes(title_text='Index')
     fig.update_yaxes(title_text='Close Price')
     fig.update_layout(title='Linear Regression Predictions vs Actual')
-    st.plotly_chart(fig)
-    
-elif model == 'LSTM':
-    lstm_units = st.sidebar.slider('LSTM Units', min_value=10, max_value=100, value=50, step=10)
-    epochs = st.sidebar.slider('Epochs', min_value=10, max_value=100, value=50, step=10)
-    batch_size = st.sidebar.slider('Batch Size', min_value=16, max_value=128, value=32, step=16)
-    
-    # Reshape data for LSTM
-    X_train_lstm = np.reshape(X_train_scaled, (X_train_scaled.shape[0], 1, X_train_scaled.shape[1]))
-    X_test_lstm = np.reshape(X_test_scaled, (X_test_scaled.shape[0], 1, X_test_scaled.shape[1]))
-
-    # Define LSTM model
-    lstm_model = Sequential([
-        LSTM(units=lstm_units, return_sequences=True, input_shape=(X_train_lstm.shape[1], X_train_lstm.shape[2])),
-        LSTM(units=lstm_units, return_sequences=False),
-        Dense(units=1)
-    ])
-    lstm_model.compile(optimizer='adam', loss='mean_squared_error')
-
-    # Fit the model
-    lstm_model.fit(X_train_lstm, Y_train, epochs=epochs, batch_size=batch_size, verbose=1)
-
-    # Make predictions using LSTM model
-    lstm_predictions = lstm_model.predict(X_test_lstm)
-
-    st.subheader('Evaluation')
-    mse = mean_squared_error(Y_test, lstm_predictions)
-    mae = mean_absolute_error(Y_test, lstm_predictions)
-    r2 = r2_score(Y_test, lstm_predictions)
-    st.success(f'Mean Squared Error (MSE): {round(mse, 2)}')
-    st.success(f'Mean Absolute Error (MAE): {round(mae, 2)}')
-    st.success(f'R^2 Score: {round(r2, 2)}')
-
-    st.subheader('📈 Chart')
-    # Plot predictions vs actual using Plotly
-    fig = go.Figure()
-    fig.add_trace(go.Scatter(x=np.arange(len(X_train)), y=Y_train.values, mode='lines', name='Training Data', line=dict(color='green')))
-    fig.add_trace(go.Scatter(x=np.arange(len(X_train), len(X_train) + len(X_test)), y=Y_test.values, mode='lines', name='Test Data', line=dict(color='blue')))
-    fig.add_trace(go.Scatter(x=np.arange(len(X_train), len(X_train) + len(X_test)), y=lstm_predictions.flatten(), mode='lines', name='LSTM Predictions', line=dict(color='red')))
-    fig.update_xaxes(title_text='Index')
-    fig.update_yaxes(title_text='Close Price')
-    fig.update_layout(title='LSTM Predictions vs Actual')
     st.plotly_chart(fig)
     
 elif model == 'Random Forest':
